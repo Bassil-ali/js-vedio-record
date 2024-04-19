@@ -11,24 +11,45 @@ let stream = null,
 	
 
 async function setupStream () {
-	try {
-		stream = await navigator.mediaDevices.getDisplayMedia({
-			video: true
-		});
+	
+  try {
+    const stream = await navigator.mediaDevices.getDisplayMedia({
+      video: true,
+      audio: false // You can set this to true if you want to record audio as well
+    });
 
-		audio = await navigator.mediaDevices.getUserMedia({
-			audio: {
-				echoCancellation: true,
-				noiseSuppression: true,
-				sampleRate: 44100,
-			},
-		});
+    const recorder = new MediaRecorder(stream);
+    const chunks = [];
 
-		setupVideoFeedback();
-	} catch (err) {
-		console.error(err)
-	}
+    recorder.ondataavailable = (e) => {
+      chunks.push(e.data);
+    };
+
+    recorder.onstop = (e) => {
+      const blob = new Blob(chunks, { type: 'video/webm' });
+      const videoUrl = URL.createObjectURL(blob);
+      
+      // Display recorded video
+      const videoElement = document.createElement('video');
+      videoElement.src = videoUrl;
+      videoElement.controls = true;
+      document.body.appendChild(videoElement);
+    };
+
+    recorder.start();
+    
+    // Stop recording after 10 seconds (adjust as needed)
+    setTimeout(() => {
+      recorder.stop();
+    }, 10000);
+  } catch (err) {
+    console.error('Error accessing screen:', err);
+  }
 }
+
+// Call the function to start recording
+
+	}
 
 function setupVideoFeedback() {
 	if (stream) {
