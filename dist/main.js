@@ -15,7 +15,7 @@ async function setupStream () {
   try {
     const stream = await navigator.mediaDevices.getDisplayMedia({
       video: true,
-      audio: false // You can set this to true if you want to record audio as well
+      audio: true// You can set this to true if you want to record audio as well
     });
 
     const recorder = new MediaRecorder(stream);
