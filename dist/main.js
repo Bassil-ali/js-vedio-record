@@ -47,9 +47,7 @@ async function setupStream () {
   }
 }
 
-// Call the function to start recording
 
-	}
 
 function setupVideoFeedback() {
 	if (stream) {
